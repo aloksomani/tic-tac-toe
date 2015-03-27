@@ -1,0 +1,44 @@
+/********************************************************/
+/* Global Properties */
+
+html{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+*, *:before, *:after{
+	box-sizing: inherit;
+}
+
+/********************************************************/
+/* Container and Header */
+
+#container{
+	height:700px;
+	width:800px;
+	margin:5px auto;
+	text-align:center;
+	border:1px dashed black;
+}
+
+header{
+	background-color:grey;
+	color:white;
+	height:90px;
+	font-family:"Courgette", cursive;
+}
+
+#welcome{
+	font-size:64px;
+	margin:0;
+}
+
+#hash{
+	font-family:"Courgette", cursive;
+	font-size:100px;
+	color:aquamarine;
+}
+
+#hash
+	z-index: -1;

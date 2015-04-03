@@ -1,2 +1,2 @@
 angular
-    .module('ticTacToe', []);
+    .module('ticTacToe', ['firebase']);

@@ -33,14 +33,17 @@ angular
             var ref = new Firebase('https://ttt-alok.firebaseIO.com/home');
             var board = $firebaseObject(ref);
 
+
+
             board.$loaded(function(){
                 board.squares = [];
                 board.clicks = 0;
 
 
                 for(var i=0; i<9; i++){
-                    board.squares.push({clicked: false, move: null, won: false});
+                    board.squares.push({clicked: false, move: "", won: false});
                 }
+                
                 board.$save();
             });
 
@@ -78,11 +81,11 @@ angular
 
             for(var i=0; i<self.grid.squares.length; i++){
                 self.grid.squares[i].clicked = false;
-                self.grid.squares[i].move = null;
+                self.grid.squares[i].move = "";
                 self.grid.squares[i].won = false;
             }
-            self.grid.clicks.$save();
-            self.winner.$save();
+            self.grid.$save();
+            // self.winner.$save();  //this might be a bug
         }
 
         function checkMove(index){
@@ -96,12 +99,12 @@ angular
             }
 
             else{
-                getMove(index);
+                self.getMove(index);
             }
         };
 
         function getMove(index){
-        	self.grid.clicks ++;
+        	self.grid.clicks++;
 
         	if(self.grid.clicks === 1){
         		self.grid.squares[index].clicked = true;
@@ -119,9 +122,13 @@ angular
         		self.grid.squares[index].move;
 
         	}
+            //console.log(self.checkWinner);
             self.checkWinner();
-        	self.grid.squares.$save();
-            self.grid.clicks.$save();
+        	//self.grid.squares.$save();
+            //self.grid.clicks.$save();
+
+            console.log(self.grid.clicks);
+            self.grid.$save();
         };
 
 
@@ -132,6 +139,7 @@ angular
         // and 2 for the start of the next game. 
         
         function checkWinner(){
+            console.log(self.grid.squares);
         	var one = self.grid.squares[0].move;
         	var two = self.grid.squares[1].move;
         	var three = self.grid.squares[2].move;
@@ -141,9 +149,9 @@ angular
         	var seven = self.grid.squares[6].move;
         	var eight = self.grid.squares[7].move;
         	var nine = self.grid.squares[8].move;
+            console.log(one, two);
 
-
-            if(one !== null && one === four && one === seven){
+            if(one !== "" && one === four && one === seven){
                 self.winner = one;
                 self.countWins();
                 self.grid.squares[0].won = true;
@@ -152,7 +160,8 @@ angular
                 console.log(one + " first column");
         	}
 
-        	else if(two !== null && two === five && two === eight){
+        	else if(two !== "" && two === five && two === eight){
+                console.log(two, two !== null  );
                 self.winner = two;
                 self.countWins();
                 self.grid.squares[1].won = true;
@@ -161,16 +170,17 @@ angular
                 console.log(two + " second column");
         	}
 
-        	else if(three !== null && three === six && three === nine){
+        	else if(three !== "" && three === six && three === nine){
                 self.winner = three;
                 self.countWins();
                 self.grid.squares[2].won = true;
                 self.grid.squares[5].won = true;
                 self.grid.squares[8].won = true;
+
                 console.log(three + " first column");
         	}
 
-        	else if(one !== null && one === two && one === three){
+        	else if(one !== "" && one === two && one === three){
                 self.winner = one;
                 self.countWins();
                 self.grid.squares[0].won = true;
@@ -179,7 +189,7 @@ angular
                 console.log(one + " first row");
         	}
 
-        	else if(four !== null && four === five && four === six){
+        	else if(four !== "" && four === five && four === six){
                 self.winner = four;
                 self.countWins();
                 self.grid.squares[3].won = true;
@@ -188,7 +198,7 @@ angular
                 console.log(four + " second row");
         	}
 
-        	else if(seven !== null && seven === eight && seven === nine){
+        	else if(seven !== "" && seven === eight && seven === nine){
                 self.winner = seven;
                 self.countWins();
                 self.grid.squares[6].won = true;
@@ -197,7 +207,7 @@ angular
                 console.log(seven + " third row");
             }
 
-        	else if(one !== null && one === five && one === nine){
+        	else if(one !== "" && one === five && one === nine){
                 self.winner = one;
                 self.countWins();
                 self.grid.squares[0].won = true;
@@ -206,7 +216,7 @@ angular
                 console.log(one + " first diagonal");
             }
 
-        	else if(three !== null && three === five && three === seven){
+        	else if(three !== "" && three === five && three === seven){
                 self.winner = three;
                 self.countWins();
                 self.grid.squares[2].won = true;
@@ -215,7 +225,7 @@ angular
                 console.log(three + " second diagonal");
         	}
 
-        	else if(self.clicks === 9 && self.winner === false){
+        	else if(self.grid.clicks === 9 && self.winner === false){
                 self.winner = "tie";
                 self.countWins();
         	}
@@ -223,8 +233,9 @@ angular
             else{
                 self.winner = false;
             }
-
-            self.grid.squares.$save();
+            
+            //console.log(self.grid.squares.$save);
+            self.grid.$save();
             return self.winner;
         };
 

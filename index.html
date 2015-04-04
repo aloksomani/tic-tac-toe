@@ -4,7 +4,6 @@
 	<meta charset="utf-8">
 	<title>Tic Tac Toe</title>
 	<link rel="stylesheet" href="css/normalize.css">
-	<link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="css/styles.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 	<script src="https://cdn.firebase.com/js/client/2.2.3/firebase.js"></script>
@@ -20,7 +19,7 @@
 			<h1 id="welcome">Tic-Tac-Toe</h1>
 		</header>
 		<div id="win-display"> <!-- ng-show="main.winner"-->
-			<h2 id="win-message" ng-show="main.winner">{{ main.winner + " wins" }}</h2>	
+			<h2 id="win-message" ng-show="main.grid.winner">{{ main.grid.winner + " wins" }}</h2>	
 		</div>
 		
 
@@ -28,7 +27,7 @@
 		<div class="player-column" id="player-one"> 
 			<div class="assignment" id="left-assignment"> X </div>
 			<h2 class="player-name" id="player-one-name">Player 1</h2>
-			<div class="score" id="p1" ng-show="main.xCounter > 0">{{ main.xCounter }}</div>
+			<div class="score" id="p1" ng-show="main.grid.xCounter > 0">{{ main.grid.xCounter }}</div>
 
 		</div>
 
@@ -36,7 +35,7 @@
 		<div class="player-column" id="player-two">
 			<div class="assignment" id="right-assignment"> O </div>
 			<h2 class="player-name" id="player-two-name">Player 2</h2>
-			<div class="score" id="p2" ng-show="main.oCounter > 0">{{ main.oCounter }}</div>
+			<div class="score" id="p2" ng-show="main.grid.oCounter > 0">{{ main.grid.oCounter }}</div>
 		</div>
 		
 <!--  This is my main Tic-Tac-Toe board/grid  -->

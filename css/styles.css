@@ -1,5 +1,8 @@
 /********************************************************/
-/* Global Properties */
+/* Global Properties and Courgette font */
+
+@import url(https://fonts.googleapis.com/css?family=Courgette);
+
 
 html{
 	-webkit-box-sizing: border-box;
@@ -35,7 +38,7 @@ header{
 
 #win-display{
 	width:100%;
-	height:60px;
+	height:50px;
 	text-align:center;
 	vertical-align:middle;
 }

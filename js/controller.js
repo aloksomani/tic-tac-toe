@@ -5,8 +5,8 @@ angular
     MainController$inject = ['firebaseObject'];
 
     ///////////////////////////////////////////////////////////////////////
-    // This is the start of the MainController function and also includes
-    // all properties and methods used
+    // This is the start of the MainController() function and includes
+    // all properties and methods used locally.
     /////////////////////////////////////////////////////////////////////// 
 
     function MainController($firebaseObject){
@@ -19,78 +19,65 @@ angular
         self.checkWinner = checkWinner;
         self.countWins = countWins;
 
-        self.winner = false;
-        self.xCounter = 0;
-        self.oCounter = 0;
+        // self.winner = false;
+        // self.xCounter = 0;
+        // self.oCounter = 0;
+
 
 
         ///////////////////////////////////////////////////////////////////////
-        // These functions perform the initial setup of the TicTacToe board
-        // and push it to Firebase
+        // Function getGrid() performs the initial setup of the TicTacToe board
+        // and pushes it to Firebase as the grid object. The grid{} object 
+        // contains an array called squares[].
         /////////////////////////////////////////////////////////////////////// 
         
         function getGrid(){
             var ref = new Firebase('https://ttt-alok.firebaseIO.com/home');
             var board = $firebaseObject(ref);
 
-
+            board.winner = false;
+            board.xCounter = 0;
+            board.oCounter = 0;
 
             board.$loaded(function(){
                 board.squares = [];
                 board.clicks = 0;
 
-
                 for(var i=0; i<9; i++){
                     board.squares.push({clicked: false, move: "", won: false});
                 }
-                
-                board.$save();
+
             });
 
+            board.$save();
             return board;
         };
-
-
-        // Strategy: Create two unique classes "x" and "o". Use the ng-class
-        // directive to determine which class to display based on whichever
-        // player's turn it is. Use ng-click to register a click. The ng-click
-        // directive will pass the index value ($index) to a function 
-        // getMove(index) it calls when any square in the ng-repeat is clicked.
-        // This getMove function first checks to see if it is the
-        // first play on the board. If it is the first, it will display
-        // class "x". After that, this function will serve the role of 
-        // alternating the plays between X and O, and execute those plays
-        // (again, using the ng-class directive). When it makes a play, this
-        // function will also change the value of the "grid.move" property to 
-        // eithern"x" or "o", depending on the play. Finally, it will call a 
-        // separate function checkWinner() that will check the board to look for 
-        // where the x's and o'x are currently located. If it sees 3 x's in a row 
-        // or 3 o's in a row either by row, column, or diagonally, it will end 
-        // the game and display the winner. 
-
+        debugger
 
         ///////////////////////////////////////////////////////////////////////
-        // Consists of functions that set up the board, reset the board and 
-        // associate properties at the end of a game, and check to see if the
-        // click is valid (square not already occupied)
+        // Function resetAll() clears the bord and resets associated game data,
+        // checkMove() filters clicks to counteract a player clicking a square
+        // already containing an x or an o, and getMove() returns an x or an o
+        // when clicked.
         ///////////////////////////////////////////////////////////////////////        
 
         function resetAll(){
             self.grid.clicks = 0;
-            self.winner = false;
+            self.grid.winner = false;
 
             for(var i=0; i<self.grid.squares.length; i++){
                 self.grid.squares[i].clicked = false;
                 self.grid.squares[i].move = "";
                 self.grid.squares[i].won = false;
             }
+
             self.grid.$save();
-            // self.winner.$save();  //this might be a bug
-        }
+        };
+        // End of resetAll function
 
         function checkMove(index){
             
-            if(self.winner !== false){
+            if(self.grid.winner !== false){
                 resetAll();
             }
 
@@ -102,6 +89,7 @@ angular
                 self.getMove(index);
             }
         };
+        // End of checkMove function
 
         function getMove(index){
         	self.grid.clicks++;
@@ -122,11 +110,8 @@ angular
         		self.grid.squares[index].move;
 
         	}
-            //console.log(self.checkWinner);
+            
             self.checkWinner();
-        	//self.grid.squares.$save();
-            //self.grid.clicks.$save();
-
             console.log(self.grid.clicks);
             self.grid.$save();
         };
@@ -136,10 +121,16 @@ angular
         // If one player wins, it ends the game, displays the winner, and resets
         // the global variables. It also checks to see if one player has won 3 
         // games yet. If not, it calls functions that switches players 1
-        // and 2 for the start of the next game. 
+        // and 2 for the start of the next game.
+
+        ///////////////////////////////////////////////////////////////////////
+        // Function checkWinner() runs right after getMove() to determine if 
+        // a player has one the game (occupied three consecutive squares). If
+        // a winner has been found, it will set the .winner property to the
+        // string x or o, call a countWins() function, and 
+        /////////////////////////////////////////////////////////////////////// 
         
         function checkWinner(){
-            console.log(self.grid.squares);
         	var one = self.grid.squares[0].move;
         	var two = self.grid.squares[1].move;
         	var three = self.grid.squares[2].move;
@@ -149,11 +140,10 @@ angular
         	var seven = self.grid.squares[6].move;
         	var eight = self.grid.squares[7].move;
         	var nine = self.grid.squares[8].move;
-            console.log(one, two);
 
             if(one !== "" && one === four && one === seven){
-                self.winner = one;
-                self.countWins();
+                self.grid.winner = one;
+                countWins();
                 self.grid.squares[0].won = true;
                 self.grid.squares[3].won = true;
                 self.grid.squares[6].won = true;
@@ -162,7 +152,7 @@ angular
 
         	else if(two !== "" && two === five && two === eight){
                 console.log(two, two !== null  );
-                self.winner = two;
+                self.grid.winner = two;
                 self.countWins();
                 self.grid.squares[1].won = true;
                 self.grid.squares[4].won = true;
@@ -171,7 +161,7 @@ angular
         	}
 
         	else if(three !== "" && three === six && three === nine){
-                self.winner = three;
+                self.grid.winner = three;
                 self.countWins();
                 self.grid.squares[2].won = true;
                 self.grid.squares[5].won = true;
@@ -181,7 +171,7 @@ angular
         	}
 
         	else if(one !== "" && one === two && one === three){
-                self.winner = one;
+                self.grid.winner = one;
                 self.countWins();
                 self.grid.squares[0].won = true;
                 self.grid.squares[1].won = true;
@@ -190,7 +180,7 @@ angular
         	}
 
         	else if(four !== "" && four === five && four === six){
-                self.winner = four;
+                self.grid.winner = four;
                 self.countWins();
                 self.grid.squares[3].won = true;
                 self.grid.squares[4].won = true;
@@ -199,7 +189,7 @@ angular
         	}
 
         	else if(seven !== "" && seven === eight && seven === nine){
-                self.winner = seven;
+                self.grid.winner = seven;
                 self.countWins();
                 self.grid.squares[6].won = true;
                 self.grid.squares[7].won = true;
@@ -208,7 +198,7 @@ angular
             }
 
         	else if(one !== "" && one === five && one === nine){
-                self.winner = one;
+                self.grid.winner = one;
                 self.countWins();
                 self.grid.squares[0].won = true;
                 self.grid.squares[4].won = true;
@@ -217,7 +207,7 @@ angular
             }
 
         	else if(three !== "" && three === five && three === seven){
-                self.winner = three;
+                self.grid.winner = three;
                 self.countWins();
                 self.grid.squares[2].won = true;
                 self.grid.squares[4].won = true;
@@ -225,18 +215,17 @@ angular
                 console.log(three + " second diagonal");
         	}
 
-        	else if(self.grid.clicks === 9 && self.winner === false){
-                self.winner = "tie";
+        	else if(self.grid.clicks === 9 && self.grid.winner === false){
+                self.grid.winner = "tie";
                 self.countWins();
         	}
 
             else{
-                self.winner = false;
+                self.grid.winner = false;
             }
             
-            //console.log(self.grid.squares.$save);
             self.grid.$save();
-            return self.winner;
+            return self.grid.winner;
         };
 
         // This function is going to count the number of wins, change the display 
@@ -244,21 +233,18 @@ angular
         // If a player has reached 3 wins, it will reset the win counter.
         function countWins(){
 
-            if(self.winner === "x"){
-                self.xCounter++;
+            if(self.grid.winner === "x"){
+                self.grid.xCounter++;
                 console.log("x wins!");
             }
-
-            else if(self.winner === "o"){
-                self.oCounter++;
+            else if(self.grid.winner === "o"){
+                self.grid.oCounter++;
                 console.log("o wins!");
             }
-
-            else if(self.winner === "tie"){
+            else if(self.grid.winner === "tie"){
                 console.log("Tie Game!");
             }
-
-            if(self.xCounter === 3 || self.oCounter === 3){
+            if(self.grid.xCounter === 3 || self.grid.oCounter === 3){
                 console.log("Game Over!");
             }
         };

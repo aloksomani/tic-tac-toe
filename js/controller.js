@@ -13,16 +13,13 @@ angular
         var self = this;
 
         self.grid = getGrid();
+        self.submitNameOne = submitNameOne;
+        self.submitNameTwo = submitNameTwo;
         self.resetAll = resetAll;
         self.checkMove = checkMove;
         self.getMove = getMove;
         self.checkWinner = checkWinner;
         self.countWins = countWins;
-
-        // self.winner = false;
-        // self.xCounter = 0;
-        // self.oCounter = 0;
-
 
 
         ///////////////////////////////////////////////////////////////////////
@@ -36,8 +33,13 @@ angular
             var board = $firebaseObject(ref);
 
             board.winner = false;
+            board.winMessage = "";
             board.xCounter = 0;
             board.oCounter = 0;
+            board.player1 = "";
+            board.player2 = "";
+            board.nameOneEntered = false;
+            board.nameTwoEntered = false;
 
             board.$loaded(function(){
                 board.squares = [];
@@ -46,13 +48,22 @@ angular
                 for(var i=0; i<9; i++){
                     board.squares.push({clicked: false, move: "", won: false});
                 }
-
             });
 
             board.$save();
             return board;
         };
-        debugger
+
+
+        function submitNameOne(){
+            self.grid.nameOneEntered = true;
+            self.grid.$save();
+        };
+
+        function submitNameTwo(){
+            self.grid.nameTwoEntered = true;
+            self.grid.$save();
+        };
 
         ///////////////////////////////////////////////////////////////////////
         // Function resetAll() clears the bord and resets associated game data,
@@ -117,17 +128,13 @@ angular
         };
 
 
-        // This function runs after getMove to look for three moves in sequence.
-        // If one player wins, it ends the game, displays the winner, and resets
-        // the global variables. It also checks to see if one player has won 3 
-        // games yet. If not, it calls functions that switches players 1
-        // and 2 for the start of the next game.
-
         ///////////////////////////////////////////////////////////////////////
         // Function checkWinner() runs right after getMove() to determine if 
-        // a player has one the game (occupied three consecutive squares). If
+        // a player has won the game (occupied three consecutive squares). If
         // a winner has been found, it will set the .winner property to the
-        // string x or o, call a countWins() function, and 
+        // string x or o, call a countWins() function, and change the .won
+        // property of the winning squares to true so that their backgrounds
+        // can be changed in the view.
         /////////////////////////////////////////////////////////////////////// 
         
         function checkWinner(){
@@ -228,24 +235,27 @@ angular
             return self.grid.winner;
         };
 
-        // This function is going to count the number of wins, change the display 
-        // class property based on who won in what row/column, and clear the board.
-        // If a player has reached 3 wins, it will reset the win counter.
+
+        ///////////////////////////////////////////////////////////////////////
+        // This function is going to count the number of wins, change the
+        // display class property based on who won in what row/column, and 
+        // clear the board.
+        ///////////////////////////////////////////////////////////////////////
+
         function countWins(){
 
             if(self.grid.winner === "x"){
                 self.grid.xCounter++;
-                console.log("x wins!");
+                self.grid.winMessage = "x wins!";
             }
+
             else if(self.grid.winner === "o"){
                 self.grid.oCounter++;
-                console.log("o wins!");
+                self.grid.winMessage = "o wins!";
             }
+
             else if(self.grid.winner === "tie"){
-                console.log("Tie Game!");
-            }
-            if(self.grid.xCounter === 3 || self.grid.oCounter === 3){
-                console.log("Game Over!");
+                self.grid.winMessage = "tie game";
             }
         };
     }; //End of MainController function

@@ -35,7 +35,7 @@ a:hover{
 }
 
 header{
-	background-color:grey;
+	background-color:#696f7e;
 	color:white;
 	height:90px;
 	font-family:"Courgette", cursive;
@@ -56,7 +56,8 @@ header{
 #win-message{
 	width:45%;
 	font-size:36px;
-	color:grey;
+	color:#fdc827;
+	text-shadow:-1px 0 #696f7e, 0 1px #696f7e, 1px 0 #696f7e, 0 -1px #696f7e;
 	margin:0 auto;
 	font-family:"Courgette", cursive;
 }
@@ -185,6 +186,7 @@ header{
 #left-assignment{
 	font-size:72px;
 	border-bottom:2px solid #65c39a;
+	color:#515662;
 }
 
 #player-one-name{
@@ -214,6 +216,7 @@ header{
 #right-assignment{
 	font-size:72px;
 	border-bottom:2px solid #f28282;
+	color:#515662;
 }
 
 #p2{
